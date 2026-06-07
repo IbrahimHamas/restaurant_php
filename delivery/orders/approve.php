@@ -7,6 +7,8 @@ include "../../connect.php";
 $orderid =  filterRequest("ordersid");
 $userid =  filterRequest("usersid");
 $deliveryid = filterRequest( "deliveryid");
+$deliveryAccessToken = filterRequest("deliveryAccessToken");
+
 
 
 $data = array(
@@ -14,18 +16,25 @@ $data = array(
     "orders_delivery" => $deliveryid // رقم عامل التوصيل
 );
 
- updateData("orders" , $data , "orders_id = $orderid AND orders_status = 2 ");
+$count = updateData("orders" , $data , "orders_id = $orderid AND orders_status = 2 ",false);
 
 
-   
-/*
- insertNotify("Success", "your order is on the way", $userid , "users$userid", "none", "refreshorderpending");
+   if($count > 0){
 
-//send done to store
-
-sendGCM("warning" , "The order has been approved by delivery" , "services" , "none" , "none");
+ insertNotify("Success", "your order is on the way", $userid , "user$userid",$deliveryAccessToken ,"none", "none");
 
 // a delivery man sends ok to admin
-  
-sendGCM("warning" , "The order has been approved by delivery" . $deliveryid , "delivery" , "none" , "none");
-*/
+sendGCM("warning" , "The order has been approved by delivery" ." ".$deliveryid , "admin" ,$deliveryAccessToken ,"none" , "refreshAcceptedPage");
+
+  echo json_encode(array(
+        "status" => "success"
+    ));
+
+
+   } else {
+
+
+       echo json_encode(array(
+        "status" => "failure"
+    ));
+   }

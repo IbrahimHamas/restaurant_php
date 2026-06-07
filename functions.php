@@ -211,11 +211,11 @@ function result($count){
 }
 
 
-function sendGCM($title, $message, $topic, $pageid, $pagename)
+function sendGCM($title, $message, $topic, $accessToken,$pageid, $pagename)
 {
 
 
-    $url = 'https://fcm.googleapis.com/v1/projects/ecommerce-b1d43/messages:send'; // url الخاص بال firebase المسؤل عن الاشعارات
+    $url = 'https://fcm.googleapis.com/v1/projects/bookingapp-27c29/messages:send'; // url الخاص بال firebase المسؤل عن الاشعارات
 
     $fields = [
       "message" => [
@@ -236,7 +236,7 @@ function sendGCM($title, $message, $topic, $pageid, $pagename)
 
     $fields = json_encode($fields);
     $headers = array(
-        'Authorization: Bearer ' . "ya29.c.c0ASRK0GaMt7CvDCh-6nMKLDA_of5LVazg7C0Gp2VIgXXManL0Ceq-5QP2De9CdF2xBOMxIlGUNLYaECS8558jxZT-27uW-gjAE9w9Duduz_j7AcTeFAZ6g6T7_F7UFK_mr14Q3khALtBD_LEXPY_Ed3yXWZ12fpbr_4l_D8jngVDKYowairfPEu3KPTU_wQtRSpZBcOW7iBAGWffkfhYEeryj3wzCE-NjEZ6ZsT7_8J48617T1zxlNX9cLr4Om39wR3P8VFiOIrCIyDW98m9L6HGEtEUg4eSuYDUuEE8PU336GA1CCKkuwgy3MK3GU9NOWCHX9TzaEBC7X0xjX7DNT477OpG2rYNsQnHCg-1HtNftcHTZhp0g1BYL384PgvVzjx4O7kBdMF8o5XvfhbOeWrSMw5pv4Rk5bFk2o-748mu65g9ytkwMBhFSt0_lhVXqreOxjdpkoqoaVkVi38XutW14WUaz3mR6pkQdjwUJ0OiW8XqO6YVxciwhw4fiWbvUnXq4vISI7-_BtQ2SMwwQ7QxXy-MBZrJq-4OB1nRFZmutqu5vOtXXsJ72hWjU2X0qO6X7o_RYvevult2SS3QVzc5_h8tnO7yVzFSMvmmodRcJZph4tcpBIxMIW1X4amjmyycz0i1nb2wgJVclyQzRj-ehUXJlmROYrr4Q7Z5oyw6mr7gez9n8lpw5Qq8B002j1XrvUlO_otgWqSp5hzvS0u2WnfQjnfOI6t2wFkSoFvn84lu_u00zb546FerVgjkvU068yWUOycxY3_QQQS_V2Qg2WU7Rupfw2Ybfxe7aOkOVMeqQJmsVtRgYxgQy03xO6kt_gBOUvowYoa23ymQbFggeBojogaRRx8fV7WeZR6dhZUujYSl3ZyBckxVeWlyfgd2zxf7l3bdhhYYoOzmj5r56Omwuty82iZy7WxyUQQoRbI7r7pcJYjWcro1fRsvav6UudWVrby1wBeBBqme8jmw9V5hzgJ8_FbZ03a",  //ربط الباك ايند بالفايربيز
+        'Authorization: Bearer ' . $accessToken,  //ربط الباك ايند بالفايربيز
         'Content-Type: application/json'
     );
 
@@ -253,16 +253,20 @@ function sendGCM($title, $message, $topic, $pageid, $pagename)
 }   
 
 
-function insertNotify($title , $body , $userid , $topic , $pageid , $pagename){
+
+
+function insertNotify($title , $body , $userid , $topic ,$accessToken ,$pageid , $pagename){
     global $con;
 
     $stmt = $con->prepare("INSERT INTO `notification`(`notification_title`, `notification_body`, `notification_userid`) VALUES (? , ? , ? )");
 
     $stmt->execute(array($title , $body , $userid));
 
-    sendGCM($title , $body , $topic , $pageid , $pagename);
+    sendGCM($title, $body, $topic,$accessToken,$pageid,$pagename);
     $count = $stmt ->rowCount();
 
     return $count;
 
 }
+
+

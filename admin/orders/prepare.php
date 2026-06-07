@@ -1,10 +1,14 @@
 <?php
 
 include "../../connect.php";
+require_once 'mail.php';
+
 
 $orderid =  filterRequest("ordersid");
 $userid =  filterRequest("usersid");
 $type = filterRequest("ordertype");
+$adminAccessToken = filterRequest("adminAccessToken");
+
 if($type == 0){
 
 $data = array(
@@ -19,16 +23,33 @@ $data = array(
 }
 
 
- updateData("orders" , $data , "orders_id = $orderid AND orders_status = 1 ");
+  $count =  updateData("orders" , $data , "orders_id = $orderid AND orders_status = 1",false);
 
 
-   
+   if($count > 0){
 
- insertNotify("Success", "The Order has been approved", $userid , "users$userid", "none", "refreshorderpending");
-
+ insertNotify("Success", "The Order has been Prepared", $userid , "user$userid",$adminAccessToken ,"none", "none");
 
 if($type == 0){
-sendGCM("warning", "there is  a order awaiting approval", "delivery", "none", "none");
+
+    sendGCM("warning", "There is  an order awaiting approval", "delivery", $adminAccessToken,"none", "refreshPendingPage");
+
 
 }
+
+  echo json_encode(array(
+        "status" => "success"
+    ));
+
+   } else{
+
+      echo json_encode(array(
+        "status" => "failure"
+    ));
+
+   }
+
+
+
+
 

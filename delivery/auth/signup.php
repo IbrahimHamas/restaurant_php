@@ -18,6 +18,8 @@ $response = []; // Use an array to store the response
 
 if ($count > 0) {
     $response = ["status" => "error", "message" => "Phone or Email already exists"];
+    echo json_encode($response);
+
 } else {
     $data = array(
         "delivery_name" => $username,

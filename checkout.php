@@ -10,6 +10,7 @@ $ordersprice = filterRequest("ordersprice");
 $couponid = filterRequest("couponid");
 $paymentmethod = filterRequest("paymentmethod");
 $coupondiscount = filterRequest("coupondiscount");
+$userAccessToken = filterRequest("userAccessToken");
 
 if($orderstype == "1"){
 
@@ -47,7 +48,7 @@ $data = array(
     "orders_price" => $ordersprice, 
     "orders_coupon" => $couponid,
     "orders_totalprice" => $totalprice,
-    "orders_paymentmethod" => $paymentmethod,  
+    "orders_paymentmethod" => $paymentmethod, 
 );
 
 $count = insertData("orders",$data  ,false );
@@ -59,6 +60,10 @@ if($count > 0){
     $stmt->execute();
 
     $maxid = $stmt->fetchColumn();
+
+   
+   sendGCM("warning" , "A new order has been placed" , "admin" ,$userAccessToken ,"none" , "refreshPendingPage");
+
 
     $data = array("cart_orders" => $maxid);
 
